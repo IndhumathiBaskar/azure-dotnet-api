@@ -127,3 +127,72 @@ docker pull azuredotnetapi.azurecr.io/helloazure:latest
 * Codespaces is **temporary** — Docker images there disappear if closed
 
 ---
+
+## 8. Deploy Docker Image to Azure Container App
+
+1. **Create Container App**
+
+   * Go to **Azure Portal → Container Apps → Create → Container App**
+   * Fill in the basics:
+
+     * **Name**: `helloazure-app`
+     * **Subscription**: your Azure subscription
+     * **Resource Group**: select or create one
+     * **Region**: your preferred region
+
+2. **Configure Container**
+
+   * **Image Source**: Azure Container Registry
+   * **Registry**: `azuredotnetapi.azurecr.io`
+   * **Image**: `helloazure`
+   * **Tag**: `latest`
+   * **Target Port**: `8080` (matches Dockerfile EXPOSE)
+   * **Authentication**: Managed Identity (System-assigned)
+
+3. **Enable Ingress**
+
+   * Check **Enable Ingress**
+   * **Ingress type**: HTTP
+   * **Target port**: `8080`
+   * This allows the app to be publicly accessible
+
+4. **Workload Profile**
+
+   * Choose **Consumption** (0.5 CPU / 1 GiB memory) for learning
+   * Click **Review + Create → Create**
+
+5. **Test Public URL**
+
+   * Once deployment completes, go to **Overview → Application URL**
+   * Open in browser:
+
+```
+https://helloazure-app.<random>.azurecontainerapps.io/weatherforecast
+```
+
+* You should see the **Weather Forecast JSON data** from your .NET API.
+
+---
+
+## 9. Update Container App with New Image
+
+* When your app changes:
+
+  1. Rebuild Docker image in Codespaces
+  2. Push to ACR with same or new tag
+  3. Update Container App image to the new version
+  4. Container App automatically creates a new **revision** and serves the updated API
+
+---
+
+### ✅ Key Learning Points – Container App
+
+* Container Apps run **directly from Docker image in ACR**
+* **Public URL** works independently of GitHub or Codespaces
+* Container Apps handle scaling and networking automatically
+* **Ingress must be enabled** to make the app publicly accessible
+
+---
+
+
+
